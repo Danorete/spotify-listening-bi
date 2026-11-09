@@ -1,0 +1,8 @@
+# Never publish the raw Spotify export or the full stream log
+Spotify Account Data/
+my_spotify_data.zip
+data/streams_clean.csv
+.DS_Store
+
+# Artist photos are third party images used only inside the Tableau workbook
+images/artist_photos/
