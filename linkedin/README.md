@@ -21,8 +21,9 @@ These are in priority order. The first three are worth doing; the rest are optio
       `linkedin/images/1_dashboard_overview.png`.
 - [ ] Rename the workbook on Tableau Public. The address still contains the defaults `Book1` and `Dashboard1`.
       If you rename it, update the link in the main README and in section 6 below.
-- [ ] The Habits page (`images/11_dashboard_habits_page.png`) has large empty areas and leftover labels
-      ("Value", "Measure Names", "Filters"). It is not used in this post. Fix it before featuring it anywhere.
+- [ ] Optional polish on the Habits page: its legend is headed "Measure Names" (Tableau's default label) and
+      there is an empty band below the calendar. Rename the legend, retake the screenshot, and replace
+      `images/11_dashboard_habits_page.png` and `linkedin/images/4_dashboard_habits.png`.
 
 ## 2. The post
 
@@ -78,13 +79,17 @@ have not been able to verify.
 
 ## 3. Images
 
-Three upload-ready files are in `linkedin/images/`. Upload them in this order.
+Four upload-ready files are in `linkedin/images/`. The first three were the original set. Image 4, the Habits
+page, was added on 2026-11-10 because the artist photo row sets the project apart. If you are composing a new
+post, put it second. A published LinkedIn post cannot have images added afterwards, so for a post that is
+already live, use image 4 in the Featured section or a follow-up post.
 
 | Order | File | Size | What it shows | Why it is here |
 |---|---|---|---|---|
 | 1 | `1_dashboard_overview.png` | 1922 x 1356 | The finished Overview page | The result. It carries the headline 47%, the daytime versus overnight comparison and the skip rate chart. |
 | 2 | `2_skip_rate_by_hour.png` | 2080 x 1387 | Skip rate for each hour of the day | The finding, on its own and easy to read. |
 | 3 | `3_integrity_checks.png` | 2080 x 1387 | The data checks: files, duplicates, nulls, date range | Shows the validation work, which is what analyst roles screen for. |
+| 4 | `4_dashboard_habits.png` | 1918 x 1282 | The Habits page: plays under versus over 30 seconds by hour, a weekly calendar, and the top 10 artist photo row | Shows the interactive artist filter, which most dashboards like this do not have. Suggested position in a new post: second. |
 
 Images 2 and 3 are copies of `images/07_skip_rate_by_hour.png` and `images/02_integrity_checks.png` with
 blank space added above and below. The originals are about 2.4 times wider than tall, and the padding keeps
@@ -98,10 +103,13 @@ Check the preview before you publish. If an image looks cropped, post image 1 al
 2. `Bar chart of skip rate by hour of day in Eastern time. The rate is lowest at 5 AM, about 9%, and highest at 3 PM, 58%. Daytime hours from 10 AM to 6 PM are all near or above 50%.`
 3. `Table of integrity checks on the combined data. Files combined: 9 of 9, pass. Total streams: 87,748. Exact duplicate rows: 0, pass. Missing values: 0, pass. Three items marked for review, including 493 zero millisecond streams. Date range: Nov 6 2025 to Nov 6 2026.`
 
+4. `Dark dashboard page titled "When do I actually finish a song?" A stacked bar chart shows plays by hour of day, split into plays under 30 seconds and plays of 30 seconds or more, with under-30-second plays highest from about 10 a.m. to 6 p.m. A row of photos of my top 10 artists filters every chart. Below, a calendar heatmap shows hours listened by week and weekday from November 2025 to November 2026, with a visible gap in December.`
+
+Image 4 shows artist photos, which are other people's images. The risk is low on a student portfolio, but it
+is your call.
+
 ### Images not to use yet
 
-- `11_dashboard_habits_page.png`: unfinished layout (see section 1). It also shows artist photos, which are
-  other people's images.
 - `03_date_coverage_gap.png`: nearly three times wider than tall, so it will display very small.
 
 ## 4. Video (optional)
