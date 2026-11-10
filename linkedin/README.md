@@ -15,11 +15,10 @@ These are in priority order. The first three are worth doing; the rest are optio
       repository, and squashing keeps that out of this project's history.
 - [ ] **Fix the `tableau` folder mismatch.** The main README says the repository contains an exported workbook
       in a `tableau` folder. That folder is not in the repository. Either add the `.twbx` file or remove the row.
-- [ ] Tidy the Overview page (seen in `images/12_dashboard_overview_page.png`; the live page may already differ):
-  - The line "Showing: all listening (click an artist)" is cut off at the bottom.
-  - Faint leftover headings "KPIs" and "Showing" are visible.
-  - The top right of the page is empty.
-  - One axis reads "Month of Month Start".
+- [x] Overview page redone and the screenshot replaced on 2026-11-10 (`images/12_dashboard_overview_page.png`).
+      One small thing is left: the monthly chart's axis still reads "Month of Month Start". Change it to "Month"
+      in Tableau, retake the screenshot, and replace both `images/12_dashboard_overview_page.png` and
+      `linkedin/images/1_dashboard_overview.png`.
 - [ ] Rename the workbook on Tableau Public. The address still contains the defaults `Book1` and `Dashboard1`.
       If you rename it, update the link in the main README and in section 6 below.
 - [ ] The Habits page (`images/11_dashboard_habits_page.png`) has large empty areas and leftover labels
@@ -40,7 +39,7 @@ I requested my listening history from Spotify and built a Tableau dashboard arou
 
 What the data showed:
 • 87,748 streams, 2,071 hours and 2,496 artists over one year
-• Overnight, about 26% of streams get skipped. Between 10 AM and 6 PM it is near 55%.
+• Overnight, about 26% of streams get skipped. Between 10 AM and 6 PM it is about 54%.
 • 835 of those artists appear exactly once
 
 My read: late nights are for music I already know, and daytime is for sampling. The data shows the pattern, not the reason.
@@ -83,7 +82,7 @@ Three upload-ready files are in `linkedin/images/`. Upload them in this order.
 
 | Order | File | Size | What it shows | Why it is here |
 |---|---|---|---|---|
-| 1 | `1_dashboard_overview.png` | 2420 x 1959 | The finished Overview page | The result. It carries the headline numbers and the main chart. |
+| 1 | `1_dashboard_overview.png` | 1922 x 1356 | The finished Overview page | The result. It carries the headline 47%, the daytime versus overnight comparison and the skip rate chart. |
 | 2 | `2_skip_rate_by_hour.png` | 2080 x 1387 | Skip rate for each hour of the day | The finding, on its own and easy to read. |
 | 3 | `3_integrity_checks.png` | 2080 x 1387 | The data checks: files, duplicates, nulls, date range | Shows the validation work, which is what analyst roles screen for. |
 
@@ -95,7 +94,7 @@ Check the preview before you publish. If an image looks cropped, post image 1 al
 
 ### Alt text (paste into LinkedIn's alt text box for each image)
 
-1. `Dark dashboard titled "What my skips say about how I listen". Headline numbers: 325 active days, 87,748 streams, 2,071 hours, 47% skip rate. Four charts: listening hours by month with a marked data gap, a weekday by hour heatmap, skip rate by hour of day peaking at 58%, and the top 10 artists.`
+1. `Dark dashboard titled "I skip almost half of what I play." A large green 47% shows the share of plays that ended in a skip. A comparison shows 54% skipped from 10 a.m. to 6 p.m. versus 26% from midnight to 6 a.m. A bar chart of skip rate by hour of day peaks at 58% around 3 p.m., and a second chart shows listening hours by month with a note about the December data gap.`
 2. `Bar chart of skip rate by hour of day in Eastern time. The rate is lowest at 5 AM, about 9%, and highest at 3 PM, 58%. Daytime hours from 10 AM to 6 PM are all near or above 50%.`
 3. `Table of integrity checks on the combined data. Files combined: 9 of 9, pass. Total streams: 87,748. Exact duplicate rows: 0, pass. Missing values: 0, pass. Three items marked for review, including 493 zero millisecond streams. Date range: Nov 6 2025 to Nov 6 2026.`
 
@@ -116,9 +115,9 @@ dashboard is interactive. Only record it after the Overview page is tidied.
 |---|---|
 | 0 to 5 | The Overview page, still. Let the title and headline numbers be read. |
 | 5 to 15 | Move the pointer slowly across the skip rate chart, from the 5 AM bar to the 3 PM bar. |
-| 15 to 25 | Hover over the data gap note on the monthly chart. |
-| 25 to 35 | Click one artist to filter the page, pause, then clear the filter. |
-| 35 to 45 | Click the Habits button only if that page has been tidied. Otherwise stop at 35. |
+| 15 to 25 | Move the pointer along the monthly chart, then pause on the data gap footnote at the bottom. |
+| 25 to 35 | Click the Habits button, then click one artist photo to filter the page, pause, then click it again to clear. |
+| 35 to 45 | Click the Overview button to return. Skip the Habits steps if that page has not been tidied, and stop at 25. |
 
 **How to record on a Mac:**
 
@@ -129,7 +128,7 @@ dashboard is interactive. Only record it after the Overview page is tidied.
 
 **Things to decide:**
 
-- Clicking an artist shows the artist photo row. Those photos are other people's images. Either skip that
+- The artist photo row is on the Habits page. Those photos are other people's images. Either skip that
   step or accept that they appear.
 - Many people watch with sound off. If you add narration, add on-screen text or captions as well.
 - If you post the video, use it in place of the images. A LinkedIn post takes images or a video, not both
@@ -161,7 +160,7 @@ Use these exact figures. Each one is in the main README.
 | Streams skipped (played under 30 seconds) | 47% |
 | Skip rate, midnight to 5 AM | about 26% |
 | Skip rate at 5 AM | 9% |
-| Skip rate, 10 AM to 6 PM | near 55% |
+| Skip rate, 10 AM to 6 PM | 54% (the dashboard shows 54%; the main README says "near 55%") |
 | Peak skip rate, around 3 PM | 58% |
 | Average listening per active day | 6.4 hours |
 | Export files combined | 9 of 9 |
@@ -170,7 +169,7 @@ Use these exact figures. Each one is in the main README.
 | Timezone handling | Spotify exports UTC; converted to Eastern |
 | Tools | Python, pandas, matplotlib, Tableau Public |
 
-Two figures appear on the dashboard but not in the main README: 325 active days, and the individual review
+Two figures appear on the dashboard but not in the main README: 325 active days (in the subtitle), and the individual review
 items in the integrity table (493 zero millisecond streams, 66 streams over 10 minutes, longest stream
 25.7 minutes). They are fine to mention because the images show them.
 
