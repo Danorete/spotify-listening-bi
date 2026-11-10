@@ -14,9 +14,9 @@ I requested my account data from Spotify and analyzed a full year of streaming, 
 
 ## What is in the dashboard
 
-The dashboard has two pages with a dark, Spotify inspired design. The Overview page opens with the headline numbers and the main finding, then shows monthly hours, a weekday by hour heatmap, skip rate by hour of day, and the top 10 artists. The Habits page adds a calendar of listening by week, completed versus skipped streams by hour, and a larger set of headline numbers.
+The dashboard has two pages with a dark, Spotify inspired design. The Overview page leads with the main finding (I skip almost half of what I play), the 47% headline skip rate, and the daytime versus overnight comparison, then shows skip rate by hour of day and listening hours by month, with the December gap noted below the chart. The Habits page adds a calendar of listening by week, completed versus skipped streams by hour, and the top 10 artist photos.
 
-Both pages are interactive. Each page has a row of my top 10 artists as photos. Clicking a photo filters every chart on that page to that artist, and a text line under the photos names the artist's most played song and how many times I played it. Buttons on each page switch between the two pages.
+The Habits page is interactive. It has a row of my top 10 artists as photos. Clicking a photo filters every chart on that page to that artist, and buttons on each page switch between the two pages.
 
 ## Headline numbers
 
@@ -60,7 +60,7 @@ Decisions I made along the way: the December gap is annotated on the trend chart
 | 9 | Top 10 artists | What I play most, with skip rate in the tooltip |
 | 10 | Dashboard layout | How the first four charts fit together |
 | 11 | Habits page | Calendar, completed versus skipped by hour, artist photos, and a most played song per artist |
-| 12 | Overview page | The finished first page with the headline numbers and artist photo filter |
+| 12 | Overview page | The finished first page with the headline skip rate, the daytime versus overnight comparison, skip rate by hour, and monthly hours |
 
 ## Tech stack
 
