@@ -226,6 +226,11 @@ def create_app(settings: Settings, ai_client: AIClient | None = None) -> FastAPI
             need("actions", body.action_id)
         return services.start_session(db, body.minutes, body.action_id)
 
+    @app.post("/api/session/end")
+    def session_end() -> dict:
+        services.end_session(db)
+        return {"ok": True}
+
     @app.post("/api/onboarding/answer")
     def onboarding_answer(body: TextIn) -> dict:
         return services.onboarding_answer(db, body.text)

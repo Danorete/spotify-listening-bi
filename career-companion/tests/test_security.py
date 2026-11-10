@@ -88,6 +88,7 @@ def test_security_headers_on_every_response(client, anon):
                  anon.get("/static/app.js")):
         csp = resp.headers["content-security-policy"]
         assert "default-src 'none'" in csp and "script-src 'self'" in csp and "unsafe-inline" not in csp
+        assert "font-src 'self'" in csp and "http" not in csp  # fonts are bundled; nothing loads from outside
         assert resp.headers["x-content-type-options"] == "nosniff"
         assert resp.headers["x-frame-options"] == "DENY"
         assert resp.headers["cache-control"] == "no-store"

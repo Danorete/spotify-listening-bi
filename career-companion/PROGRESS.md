@@ -24,14 +24,24 @@ COMPANION_DATA_DIR=/tmp/cc-dev .venv/bin/companion run --no-browser
 - [x] 7b. Browser interface: `src/companion/static/` (checked in headless Chromium, no console errors)
 - [x] 8. `README.md` (setup, live-AI steps, test results, limitations), `requirements.lock`
 
-State at last update (2026-11-10): 114 tests pass on Linux, Python 3.13. Mock AI only.
+- [x] 9. Design pass (decisions D19 to D23): dedicated onboarding, focused Today with session ring, companion
+  identity and states, resizable and collapsible panel, sidebar navigation, bundled fonts, loading and error
+  states, keyboard and reduced-motion support. Interface files: `static/index.html`, `static/style.css`,
+  `static/app.js`. Backend additions: `POST /api/session/end`, `session` and `today` in `/api/today`,
+  onboarding hints, `font-src 'self'` in the CSP.
+
+State at last update (2026-11-10): 116 tests pass on Linux, Python 3.13. Mock AI only. The interface was
+checked in headless Chromium at 1470 x 860, 1710 x 1010 and 390 x 844.
+
+Design reference (two directions, private to the owner): https://claude.ai/artifact/BNv3bCGtPEPwBRF5jZtMUG
 
 ## Next, in order
 
 1. Run the test suite and the app on the Mac. Note anything macOS-specific in README limitations.
 2. Enter real evidence, voice samples, and to-dos. Use it in mock mode for a few sessions.
 3. First live call, following "Turning on live AI" in the README.
-4. After about two weeks of real sessions, review: ranking weights, the strong-word list in
+4. Design follow-ups, if wanted: a dark theme, a different companion name, streaming replies.
+5. After about two weeks of real sessions, review: ranking weights, the strong-word list in
    `validate.py`, and whether the onboarding questions were the right four.
 
 ## Not started, deliberately

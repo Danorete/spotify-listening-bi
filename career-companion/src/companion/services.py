@@ -15,11 +15,11 @@ from .validate import validate_draft
 MAX_PROPOSALS_PER_TURN = 3
 
 ONBOARDING = [
-    ("goal", "First, what are you working toward over the next few months? One or two sentences is plenty."),
-    ("constraint", "What gets in the way? Tell me about your time and energy in whatever detail you're "
-                   "comfortable with. Skip anything sensitive: I only need enough to plan around it."),
-    ("preference", "How do you like to be worked with? Blunt or gentle, short or detailed, anything that annoys you."),
-    ("boundary", "Last one: is there anything I should never suggest or never put in writing for you?"),
+    ("goal", "What are you working toward in the next few months?", "A sentence or two is plenty."),
+    ("constraint", "What gets in the way of your time and energy?",
+     "Skip anything sensitive. I only need enough to plan around it."),
+    ("preference", "How do you like to be worked with?", "Blunt or gentle, short or detailed, anything that annoys you."),
+    ("boundary", "Is there anything I should never suggest or put in writing?", "For example a topic, an employer, or a tone."),
 ]
 
 
@@ -37,6 +37,10 @@ def start_session(db: Database, minutes: int, action_id: int | None) -> dict:
     db.run("UPDATE sessions SET ended_at=? WHERE ended_at IS NULL", (now(),))
     sid = db.run("INSERT INTO sessions(started_at,minutes,focus_action_id) VALUES(?,?,?)", (now(), minutes, action_id))
     return db.one("SELECT * FROM sessions WHERE id=?", (sid,))  # type: ignore[return-value]
+
+
+def end_session(db: Database) -> None:
+    db.run("UPDATE sessions SET ended_at=? WHERE ended_at IS NULL", (now(),))
 
 
 def ensure_session(db: Database) -> dict:
@@ -67,13 +71,18 @@ def today_view(db: Database, settings: Settings, minutes: int) -> dict:
                     "or park an idea. No need to invent work.")
     else:
         top = options[0]
-        opener = "Welcome back." if not days_away else (
-            f"Welcome back. It's been {days_away} day{'s' if days_away != 1 else ''}, and nothing needs catching up.")
-        greeting = (f"{opener} With {minutes} minutes, I'd do one thing: {top.action['title']}. "
-                    + " ".join(top.reasons[:3])
-                    + (f" Where you left it: {top.action['where_left_off']}" if top.action["where_left_off"] else ""))
+        opener = "" if not days_away else (
+            f"Welcome back. It's been {days_away} day{'s' if days_away != 1 else ''}, and nothing needs catching up. ")
+        left = top.action["where_left_off"]
+        greeting = (f"{opener}With {minutes} minutes, I'd do one thing: {top.action['title']}. "
+                    + " ".join(top.reasons[:2])
+                    + (f" You left it at: {left}" if left and left != store.STATE_NOTES["suggested"] else ""))
+    active = active_session(db)
     return {
         "minutes": minutes, "greeting": greeting, "days_away": days_away,
+        # Only a session the user started on a specific action has a timer.
+        "session": active if active and active["focus_action_id"] else None,
+        "today": today.isoformat(),
         "recommended": _option(options[0], db) if options else None,
         "alternatives": [_option(o, db) for o in options[1:]],
         "reminders": reminders,
@@ -94,7 +103,8 @@ def onboarding_state(db: Database) -> dict:
     step = int(row["value"]) if row else 0
     done = step >= len(ONBOARDING)
     return {"done": done, "step": step, "total": len(ONBOARDING),
-            "question": None if done else ONBOARDING[step][1]}
+            "question": None if done else ONBOARDING[step][1],
+            "hint": None if done else ONBOARDING[step][2]}
 
 
 def onboarding_answer(db: Database, text: str) -> dict:

@@ -7,30 +7,30 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <header class="topbar">
-    <strong class="brand">Career Companion</strong>
-    <nav id="tabs" class="tabs" aria-label="Sections"></nav>
-    <span id="ai-pill" class="pill"></span>
-    <span id="budget-pill" class="pill"></span>
-  </header>
-  <div class="layout">
-    <main id="workspace" class="workspace" aria-live="polite"></main>
-    <aside class="dock" aria-label="Companion">
-      <div class="dock-head">
-        <strong>Your companion</strong>
-        <span id="dock-note" class="muted small"></span>
-      </div>
-      <div id="chat-log" class="chat-log"></div>
-      <div id="chat-attach" class="chat-attach"></div>
-      <form id="chat-form" class="chat-form">
-        <textarea id="chat-input" rows="2" maxlength="4000" placeholder="Talk it through…" aria-label="Message"></textarea>
-        <div class="row">
-          <button type="submit" class="primary">Send</button>
-          <button type="button" id="chat-skip" class="hidden">Skip this question</button>
+  <a class="skip" href="#main">Skip to main content</a>
+  <div class="shell">
+    <nav id="side" class="side" aria-label="Sections"></nav>
+    <main id="main" class="sheet" tabindex="-1"></main>
+    <div id="resize" class="resize" role="separator" aria-orientation="vertical" aria-label="Resize companion panel" tabindex="0"></div>
+    <aside id="dock" class="dock" aria-label="Tempo, your companion">
+      <header class="dock-head">
+        <span id="orb" class="orb is-ready"></span>
+        <div class="dock-id">
+          <div class="dock-name">Tempo</div>
+          <div id="dock-status" class="dock-status" role="status">Ready</div>
         </div>
+        <button id="dock-collapse" type="button" class="icon-btn" aria-label="Collapse companion panel"></button>
+      </header>
+      <div id="chat-log" class="chat-log" role="log" aria-live="polite" aria-label="Conversation with Tempo"></div>
+      <div id="chat-attach" class="chat-attach"></div>
+      <form id="chat-form" class="composer">
+        <label class="sr" for="chat-input">Message Tempo</label>
+        <textarea id="chat-input" rows="1" maxlength="4000" placeholder="Talk it through…"></textarea>
+        <button id="chat-send" type="submit" class="send" aria-label="Send message"></button>
       </form>
     </aside>
   </div>
+  <button id="dock-pill" type="button" class="dock-pill"></button>
   <div id="toast" class="toast hidden" role="status"></div>
   <script src="/static/app.js"></script>
 </body>

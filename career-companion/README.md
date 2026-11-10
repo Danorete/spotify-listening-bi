@@ -15,7 +15,7 @@ Requires Python 3.11 or newer. Don't use the system `/usr/bin/python3`; install 
 cd career-companion
 python3.12 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
-.venv/bin/python -m pytest -q      # 114 tests, about 7 seconds
+.venv/bin/python -m pytest -q      # 116 tests, about 8 seconds
 .venv/bin/companion run
 ```
 
@@ -52,17 +52,28 @@ job comparison send only the evidence you tick, your voice notes, and what you t
 
 ## What it does
 
-- **Today**: one recommended action with reasons, alternatives collapsed, due reminders, an idea parking lot.
-- **Work**: opportunities and relationships, to-dos, one-click outcome recording with undo.
+First run is a short conversation with the companion (working name: Tempo): four questions, one at a time,
+each skippable. The workspace appears afterwards.
+
+- **Today**: one recommended action beside a session ring. Pick 15, 20 or 30 minutes and start; the ring
+  counts down. Other options, reminders, and the idea parking lot are tucked into rows below. An empty
+  account offers two first steps: add a project, or paste your profile text.
+- **People & roles**: who you're talking to and what you're going for, to-dos, one-click outcomes with undo.
 - **Evidence**: claims with a status, numbers, approved uses, banned phrases, and a confidential flag.
-- **Drafts**: write or generate text; every save is checked against the evidence; autosave.
-- **Pasted material**: job descriptions and messages, treated as untrusted reference; compare with evidence.
+- **Drafts**: set up, write (yourself or with the companion), check. Every save is checked against evidence.
 - **About me**: everything the companion remembers, editable and deletable.
-- **Budget & data**: spend, recent calls, reconcile, activity log, export, delete.
+- **Pasted material** and **Settings & data** sit lower in the sidebar: reference text, AI mode, spending,
+  export, delete, activity log. AI mode and budget are always visible at the bottom of the sidebar.
+- **The companion panel**: shows whether it is ready, thinking, waiting for your OK, or off. Drag its edge
+  (or focus the edge and use the arrow keys) to resize; collapse it to a corner pill.
+
+Keyboard: Tab reaches everything, a "Skip to main content" link comes first, Enter sends a chat message
+(Shift+Enter for a new line), Escape closes the companion on a narrow window. Motion is removed when macOS
+"Reduce motion" is on.
 
 ## Test results
 
-`114 passed` on Python 3.13, Linux, 2026-11-10. Not yet run on macOS. Coverage by acceptance criterion:
+`116 passed` on Python 3.13, Linux, 2026-11-10. Not yet run on macOS. Coverage by acceptance criterion:
 
 | Criterion | Tests |
 |---|---|
@@ -76,9 +87,13 @@ job comparison send only the evidence you tick, your voice notes, and what you t
 | No activity inside LinkedIn | `test_egress_refuses_everything_but_the_provider_api` |
 | $16 stop, unknown usage counted conservatively | `test_budget.py`, `test_failed_call_is_charged_conservatively` |
 | Local endpoints protected | `test_security.py` (22 tests) |
+| Session timer starts only on a chosen action, and ends | `test_session_timer_info_and_end` |
 
-The interface was also driven in headless Chromium through sign-in, onboarding, a confirmed suggestion, a
-draft, an edit, outcome recording, and every tab, with no console errors.
+The interface was also driven in headless Chromium at 1470 x 860 (13-inch MacBook Air), 1710 x 1010 and
+390 x 844: onboarding, the empty account, sample data, a confirmed suggestion, a full session, a draft and
+an edit, outcome recording, every section, a slowed-down load, a forced error and recovery, panel resize by
+keyboard, collapse and reopen. No script errors; no control under 44 px; text contrast 5.4:1 or better on the
+pairs measured; no sideways scrolling at any size.
 
 ## Known limitations
 
@@ -105,6 +120,9 @@ draft, an edit, outcome recording, and every tab, with no console errors.
   your macOS user could read it.
 - Reminders appear only when the app is open. There are no notifications and no background work.
 - Replies are not streamed, so a live reply appears all at once after a pause.
+- Light theme only. The earlier automatic dark mode was removed in the redesign and has not been redrawn.
+- The session ring is a timer, not an alarm: nothing sounds, and it only updates while the app is open.
+- Panel width and collapsed state are stored in the browser (layout only, no personal data).
 - The ranking weights are a first guess. Change them in `src/companion/ranking.py` after real sessions.
 - One browser session per launch; no multi-tab coordination beyond the shared cookie.
 - Dependencies are version-ranged in `pyproject.toml`; `requirements.lock` records the tested versions

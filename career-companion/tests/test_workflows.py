@@ -260,3 +260,20 @@ def test_old_transcripts_are_purged_on_start(settings):
 
 def test_database_file_is_private_to_the_user(client, settings):
     assert oct(settings.db_path.stat().st_mode)[-3:] == "600"
+
+
+def test_session_timer_info_and_end(client):
+    a = make_action(client, commitment=True)
+    assert client.get("/api/today").json()["session"] is None
+    client.post("/api/chat", json={"message": "hello"})          # a chat alone starts no timer
+    assert client.get("/api/today").json()["session"] is None
+    client.post("/api/session/start", json={"minutes": 30, "action_id": a["id"]})
+    session = client.get("/api/today").json()["session"]
+    assert session["minutes"] == 30 and session["focus_action_id"] == a["id"] and session["started_at"]
+    client.post("/api/session/end", json={})
+    assert client.get("/api/today").json()["session"] is None
+
+
+def test_onboarding_questions_are_short_with_a_hint(client):
+    state = client.get("/api/bootstrap").json()["onboarding"]
+    assert len(state["question"]) < 70 and state["hint"]
