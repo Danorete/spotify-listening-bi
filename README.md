@@ -30,7 +30,7 @@ The Habits page is interactive. It has a row of my top 10 artists as photos. Cli
 
 ## Key insights
 
-My skip rate depends heavily on the time of day. Between midnight and 5 AM only about 26% of streams are skipped, and at 5 AM it drops to 9%. Between 10 AM and 6 PM it sits near 55%, peaking at 58% around 3 PM. A reasonable reading is that late night listening is settled, familiar music while daytime listening is sampling and searching, though the data shows the pattern and not the reason.
+My skip rate depends heavily on the time of day. Between midnight and 5 AM only about 26% of streams are skipped, and at 5 AM it drops to 9%. Between 10 AM and 6 PM it sits at about 54%, peaking at 58% around 3 PM. A reasonable reading is that late night listening is settled, familiar music while daytime listening is sampling and searching, though the data shows the pattern and not the reason.
 
 My three most played artists by hours are LUCKI (82 hours), Destroy Lonely (79 hours), and Ken Carson (74 hours). Skip rates vary a lot among artists with at least 300 streams, from about 25% for The Internet to 64% for Yeat, so playing an artist often does not mean finishing their tracks.
 
