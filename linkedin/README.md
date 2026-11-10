@@ -10,9 +10,9 @@ update the numbers here before posting.
 These are in priority order. The first three are worth doing; the rest are optional polish.
 
 - [ ] **Open the live dashboard link in a private browser window** and confirm it loads without being signed in.
-- [ ] **Decide where the Career Companion code lives.** It currently sits in a draft pull request on this
-      repository, which anyone following the GitHub link can see. Moving it to its own repository keeps this
-      one about the Spotify project.
+- [ ] **Merge or close the open pull request on this repository** so visitors see a tidy project. Use
+      "Squash and merge": the branch's history includes an unrelated tool that has since moved to its own
+      repository, and squashing keeps that out of this project's history.
 - [ ] **Fix the `tableau` folder mismatch.** The main README says the repository contains an exported workbook
       in a `tableau` folder. That folder is not in the repository. Either add the `.twbx` file or remove the row.
 - [ ] Tidy the Overview page (seen in `images/12_dashboard_overview_page.png`; the live page may already differ):
