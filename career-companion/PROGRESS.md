@@ -33,7 +33,7 @@ COMPANION_DATA_DIR=/tmp/cc-dev .venv/bin/companion run --no-browser
 - [x] 10. Starter-file import (decision D24): `POST /api/starter/import`, preview and confirm in Settings & data,
   third first-step on the empty Today page.
 
-State at last update (2026-11-10): 121 tests pass on Linux, Python 3.13. Mock AI only. The interface was
+State at last update (2026-11-10): 122 tests pass on Linux, Python 3.13. Mock AI only. The interface was
 checked in headless Chromium at 1470 x 860, 1710 x 1010 and 390 x 844.
 
 Design reference (two directions, private to the owner): https://claude.ai/artifact/BNv3bCGtPEPwBRF5jZtMUG

@@ -15,7 +15,7 @@ Requires Python 3.11 or newer. Don't use the system `/usr/bin/python3`; install 
 cd career-companion
 python3.12 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
-.venv/bin/python -m pytest -q      # 121 tests, about 8 seconds
+.venv/bin/python -m pytest -q      # 122 tests, about 8 seconds
 .venv/bin/companion run
 ```
 
@@ -87,7 +87,7 @@ Keyboard: Tab reaches everything, a "Skip to main content" link comes first, Ent
 
 ## Test results
 
-`121 passed` on Python 3.13, Linux, 2026-11-10. Not yet run on macOS. Coverage by acceptance criterion:
+`122 passed` on Python 3.13, Linux, 2026-11-10. Not yet run on macOS. Coverage by acceptance criterion:
 
 | Criterion | Tests |
 |---|---|

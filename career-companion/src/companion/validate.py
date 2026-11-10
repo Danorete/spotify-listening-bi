@@ -101,6 +101,11 @@ def _banned(ev: dict) -> list[str]:
     return [p.strip().lower() for p in re.split(r"[;\n]", ev.get("do_not_claim", "")) if p.strip()]
 
 
+def _has_phrase(phrase: str, text: str) -> bool:
+    """Whole-word match, so a banned "led" does not fire on "knowledge"."""
+    return re.search(r"(?<!\w)" + re.escape(phrase) + r"(?!\w)", text, flags=re.IGNORECASE) is not None
+
+
 def _issue(code: str, severity: str, message: str) -> dict:
     return {"code": code, "severity": severity, "message": message}
 
@@ -139,7 +144,7 @@ def validate_draft(body: str, claims: list[dict], evidence_by_id: dict[int, dict
                     issues.append(_issue(code, REVIEW, f"\"{q['text']}\" appears in the evidence, but "
                                                        "attached to something else. Check what it measures."))
             for phrase in _banned(ev):
-                if phrase in text.lower():
+                if _has_phrase(phrase, text):
                     issues.append(_issue("banned_phrase", BLOCK, f"Uses a phrase you banned: \"{phrase}\"."))
             strong = _strong_words(text, f"{ev['title']} {ev['claim']} " +
                                    " ".join(str(m.get("label", "")) for m in ev["metrics"]))
@@ -161,10 +166,9 @@ def validate_draft(body: str, claims: list[dict], evidence_by_id: dict[int, dict
         if _check_number(q, pool) is not None:
             body_issues.append(_issue("untracked_number", REVIEW,
                                       f"\"{q['text']}\" in the text isn't backed by the linked evidence."))
-    lowered = body.lower()
     for ev in linked:
         for phrase in _banned(ev):
-            if phrase in lowered:
+            if _has_phrase(phrase, body):
                 body_issues.append(_issue("banned_phrase", BLOCK, f"The text uses a phrase you banned: \"{phrase}\"."))
     tagged = " ".join(c["text"] for c in report_claims)
     untagged_strong = _strong_words(body, tagged + " " + " ".join(f"{e['title']} {e['claim']}" for e in linked))

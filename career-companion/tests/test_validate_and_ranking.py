@@ -81,6 +81,12 @@ def test_banned_phrase_blocks_in_claim_and_in_body():
     assert "banned_phrase" in codes(r) and r["overall"] == "blocked"
 
 
+def test_banned_phrase_matches_whole_words_only():
+    e = ev(claim="Contributed using knowledge graphs.", do_not_claim="led; graph", metrics=[])
+    assert "banned_phrase" not in codes(check("Contributed using knowledge graphs.", evidence=e))
+    assert "banned_phrase" in codes(check("Led the work using knowledge graphs.", evidence=e))
+
+
 def test_unverified_evidence_needs_review():
     r = check("Built a dashboard.", evidence=ev(status="unverified_user_claim"))
     assert r["overall"] == "review" and "unverified_evidence" in codes(r)
