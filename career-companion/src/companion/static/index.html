@@ -1,1 +1,37 @@
-<!doctype html><title>x</title><script src="/static/app.js"></script>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career Companion</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <strong class="brand">Career Companion</strong>
+    <nav id="tabs" class="tabs" aria-label="Sections"></nav>
+    <span id="ai-pill" class="pill"></span>
+    <span id="budget-pill" class="pill"></span>
+  </header>
+  <div class="layout">
+    <main id="workspace" class="workspace" aria-live="polite"></main>
+    <aside class="dock" aria-label="Companion">
+      <div class="dock-head">
+        <strong>Your companion</strong>
+        <span id="dock-note" class="muted small"></span>
+      </div>
+      <div id="chat-log" class="chat-log"></div>
+      <div id="chat-attach" class="chat-attach"></div>
+      <form id="chat-form" class="chat-form">
+        <textarea id="chat-input" rows="2" maxlength="4000" placeholder="Talk it through…" aria-label="Message"></textarea>
+        <div class="row">
+          <button type="submit" class="primary">Send</button>
+          <button type="button" id="chat-skip" class="hidden">Skip this question</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

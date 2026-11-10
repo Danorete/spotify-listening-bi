@@ -21,10 +21,18 @@ COMPANION_DATA_DIR=/tmp/cc-dev .venv/bin/companion run --no-browser
 - [x] 6. Context assembly and claim checks: `context.py`, `validate.py`, `services.py`, `tests/test_privacy_and_injection.py`
 - [x] 7a. HTTP API: `app.py`, `cli.py`, `tests/test_workflows.py`
 
-## In progress
+- [x] 7b. Browser interface: `src/companion/static/` (checked in headless Chromium, no console errors)
+- [x] 8. `README.md` (setup, live-AI steps, test results, limitations), `requirements.lock`
 
-- [ ] 7b. Browser interface in `src/companion/static/`
-- [ ] 8. README (setup, limitations), browser check
+State at last update (2026-11-10): 114 tests pass on Linux, Python 3.13. Mock AI only.
+
+## Next, in order
+
+1. Run the test suite and the app on the Mac. Note anything macOS-specific in README limitations.
+2. Enter real evidence, voice samples, and to-dos. Use it in mock mode for a few sessions.
+3. First live call, following "Turning on live AI" in the README.
+4. After about two weeks of real sessions, review: ranking weights, the strong-word list in
+   `validate.py`, and whether the onboarding questions were the right four.
 
 ## Not started, deliberately
 
