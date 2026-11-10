@@ -264,6 +264,46 @@ def run_compare(db: Database, gateway: Gateway, import_id: int) -> dict:
     return {"summary": out.summary[:600], "requirements": rows}
 
 
+# ---- starter file: bulk-add the user's own information ---------------------------------
+
+def import_starter(db: Database, data: dict) -> dict:
+    """Add entries from a file the user chose and previewed. Nothing here is trusted as verified:
+    evidence always arrives as an unverified claim, and every entry is marked as imported so it
+    can be reviewed, edited, or deleted. Re-importing the same file adds nothing twice."""
+    added = {"memory": 0, "evidence": 0, "items": 0, "actions": 0}
+    skipped = 0
+    with db.tx():
+        for m in data.get("memory", []):
+            if db.one("SELECT 1 FROM memory WHERE kind=? AND text=?", (m["kind"], m["text"])):
+                skipped += 1
+                continue
+            store.insert(db, "memory", provenance="imported_file", **m)
+            added["memory"] += 1
+        for e in data.get("evidence", []):
+            if db.one("SELECT 1 FROM evidence WHERE title=?", (e["title"],)):
+                skipped += 1
+                continue
+            store.insert(db, "evidence", provenance="imported_file", **{**e, "status": "unverified_user_claim"})
+            added["evidence"] += 1
+        for it in data.get("items", []):
+            if db.one("SELECT 1 FROM items WHERE kind=? AND title=?", (it["kind"], it["title"])):
+                skipped += 1
+                continue
+            store.insert(db, "items", **it)
+            added["items"] += 1
+        for a in data.get("actions", []):
+            fields = dict(a)
+            item_title = fields.pop("item_title", "")
+            if db.one("SELECT 1 FROM actions WHERE title=?", (fields["title"],)):
+                skipped += 1
+                continue
+            item = db.one("SELECT id FROM items WHERE title=?", (item_title,)) if item_title else None
+            store.insert(db, "actions", item_id=item["id"] if item else None, where_left_off="Not started.", **fields)
+            added["actions"] += 1
+    db.log("starter_imported", " ".join(f"{k}={v}" for k, v in added.items()) + f" skipped={skipped}")
+    return {"added": added, "skipped": skipped}
+
+
 # ---- export ---------------------------------------------------------------------------
 
 def export_all(db: Database) -> dict:

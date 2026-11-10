@@ -152,6 +152,25 @@ class ReconcileIn(In):
     console_total_usd: float = Field(ge=0, le=10_000)
 
 
+class StarterAction(In):
+    title: str = Field(min_length=1, max_length=200)
+    kind: Literal[store.ACTION_KINDS] = "other"  # type: ignore[valid-type]
+    item_title: str = Field(default="", max_length=200)
+    commitment: bool = False
+    importance: int = Field(default=2, ge=1, le=3)
+    effort_min: int = Field(default=15, ge=5, le=240)
+    deadline: str | None = Field(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$")
+
+
+class StarterIn(In):
+    career_companion_starter: Literal[1]
+    note: str = Field(default="", max_length=500)
+    memory: list[MemoryIn] = Field(default_factory=list, max_length=60)
+    evidence: list[EvidenceIn] = Field(default_factory=list, max_length=80)
+    items: list[ItemIn] = Field(default_factory=list, max_length=60)
+    actions: list[StarterAction] = Field(default_factory=list, max_length=60)
+
+
 class WipeIn(In):
     confirm: Literal["DELETE EVERYTHING"]
 
@@ -474,6 +493,13 @@ def create_app(settings: Settings, ai_client: AIClient | None = None) -> FastAPI
         else:
             store.remove_sample(db)
         return {"ok": True}
+
+    @app.post("/api/starter/import")
+    def starter_import(body: StarterIn) -> dict:
+        data = body.model_dump()
+        for e in data["evidence"]:
+            store.check_evidence({**e, "status": "unverified_user_claim"})
+        return services.import_starter(db, data)
 
     @app.post("/api/wipe")
     def wipe(body: WipeIn) -> dict:

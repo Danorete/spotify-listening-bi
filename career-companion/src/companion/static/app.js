@@ -415,6 +415,7 @@
       h("p", { class: "hero-meta", text: "Give me one real thing to work with and I'll take it from there." }),
       step(true, "docplus", "Add a project", "About 10 minutes. Gives drafts evidence to use.", () => { S.evidenceForm = true; go("evidence"); }),
       step(false, "clip", "Paste your profile text", "About 5 minutes. Shows me where you're starting.", () => { S.pasteKind = "profile_text"; go("pasted"); }),
+      step(false, "evidence", "Import a starter file", "One step. Loads projects, goals and to-dos prepared for you.", () => { S.open.add("starter"); go("settings"); }),
       S.hasSample ? null : h("div", {}, btn("Or look around with labelled sample data", async () => { await act(() => api("POST", "/api/sample/load")); await refreshStatus(); await render(); await greet(); }, "quiet")));
   }
   async function renderToday(root) {
@@ -720,7 +721,7 @@
         const ta = h("textarea", { rows: 2, maxlength: 4000, value: m.text, "aria-label": MEMORY[m.kind] });
         sec.append(h("div", { class: "stack" },
           h("div", { class: "row" }, chip(MEMORY[m.kind], "accent"), m.audience ? chip("for " + m.audience) : null,
-            chip(m.provenance === "user_confirmed" ? "Suggested by Tempo, confirmed by you" : m.provenance === "sample" ? "Sample data" : "Typed by you", m.provenance === "sample" ? "warn" : "")),
+            chip(m.provenance === "user_confirmed" ? "Suggested by Tempo, confirmed by you" : m.provenance === "sample" ? "Sample data" : m.provenance === "imported_file" ? "Imported from your file" : "Typed by you", m.provenance === "sample" ? "warn" : "")),
           ta, h("div", { class: "row" }, btn("Save", () => act(() => api("PUT", "/api/memory/" + m.id, { kind: m.kind, text: ta.value, audience: m.audience }), "Saved.")),
             btn("Delete", async () => { await act(() => api("DELETE", "/api/memory/" + m.id), "Deleted."); render(); }, "quiet"))));
       }
@@ -766,12 +767,35 @@
         h("tbody", {}, b.recent.map((r) => h("tr", {}, [r.ts.replace("T", " ").slice(0, 16), r.call_type, r.model, r.status, "$" + Number(r.status === "settled" || r.status === "adjustment" ? r.cost_usd : r.reserved_usd).toFixed(4)].map((t) => h("td", { text: String(t) })))))))))
         : null));
 
+    const preview = h("div", { class: "stack" });
+    const picker = h("input", { type: "file", accept: ".json,application/json", "aria-label": "Starter file", onchange: async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      let data;
+      try { data = JSON.parse(await file.text()); } catch (err) { fill(preview, h("div", { class: "notice bad" }, icon("warn", 18), "That file isn't readable. It should be a .json starter file.")); return; }
+      if (!data || data.career_companion_starter !== 1) { fill(preview, h("div", { class: "notice bad" }, icon("warn", 18), "That isn't a Career Companion starter file.")); return; }
+      const groups = [["Evidence", (data.evidence || []).map((x) => x.title)], ["About me", (data.memory || []).map((x) => (MEMORY[x.kind] || x.kind) + ": " + x.text)],
+        ["People & roles", (data.items || []).map((x) => x.title + (x.org ? " · " + x.org : ""))], ["To-dos", (data.actions || []).map((x) => x.title)]].filter((g) => g[1].length);
+      const total = groups.reduce((n, g) => n + g[1].length, 0);
+      fill(preview, h("p", { class: "small", text: "Check this is yours before adding it. Evidence arrives marked as not yet verified, and everything can be edited or deleted afterwards." }),
+        groups.map(([name, lines]) => h("div", {}, h("div", { class: "eyebrow", text: name + " (" + lines.length + ")" }), h("ul", { class: "reasons" }, lines.map((l) => h("li", { text: l.length > 140 ? l.slice(0, 140) + "…" : l }))))),
+        h("div", { class: "row" }, btn("Add these " + total + " things", async () => {
+          const out = await act(() => api("POST", "/api/starter/import", data));
+          if (!out) return;
+          const n = Object.values(out.added).reduce((a, b) => a + b, 0);
+          toast("Added " + n + (out.skipped ? ". Skipped " + out.skipped + " already there." : "."));
+          say("companion", "I've got " + plural(out.added.evidence, "project", "projects") + " and " + plural(out.added.actions, "to-do", "to-dos") + " from your file. Evidence is marked unverified until you confirm it.");
+          await refreshStatus(); go("today");
+        }, "primary"), btn("Cancel", () => { picker.value = ""; fill(preview); })));
+    } });
     const phrase = h("input", { placeholder: "DELETE EVERYTHING", "aria-label": "Type DELETE EVERYTHING to confirm" });
     page.append(h("section", { class: "section" }, h("div", { class: "eyebrow", text: "Your data" }),
       h("p", { text: "Everything is in one file on this Mac. Chat transcripts are removed after 30 days." }),
       h("div", { class: "row" }, h("a", { class: "btn", href: "/api/export", download: "career-companion-export.json" }, "Export everything"),
         S.hasSample ? btn("Remove sample data", async () => { await act(() => api("POST", "/api/sample/remove"), "Removed."); await refreshStatus(); render(); })
           : btn("Load labelled sample data", async () => { await act(() => api("POST", "/api/sample/load"), "Loaded."); await refreshStatus(); render(); })),
+      disc("starter", "Import a starter file", "add your projects, goals and to-dos in one step",
+        h("p", { class: "small muted", text: "A starter file is a .json file prepared for you. Choose it, check the preview, then add it. The file is read on this Mac only." }), picker, preview),
       help("Delete everything", "This removes the database files. It can't reach Time Machine or other backups, exports you saved, or copies the AI provider keeps for up to 30 days. It isn't forensic erasure.",
         h("form", { class: "row", onsubmit: async (e) => {
           e.preventDefault();

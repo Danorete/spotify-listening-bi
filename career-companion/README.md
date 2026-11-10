@@ -15,7 +15,7 @@ Requires Python 3.11 or newer. Don't use the system `/usr/bin/python3`; install 
 cd career-companion
 python3.12 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
-.venv/bin/python -m pytest -q      # 116 tests, about 8 seconds
+.venv/bin/python -m pytest -q      # 121 tests, about 8 seconds
 .venv/bin/companion run
 ```
 
@@ -32,6 +32,20 @@ Your data lives in `~/Library/Application Support/CareerCompanion/`, outside thi
 | Port | `COMPANION_PORT` | `8765` |
 | Data folder | `COMPANION_DATA_DIR` | see above |
 | Time zone for the daily cap | `COMPANION_TIMEZONE` | `America/New_York` |
+
+## Loading your information in one step
+
+You don't have to type everything in. A starter file is a `.json` file holding evidence, About me entries,
+people and roles, and to-dos.
+
+1. On an empty Today page choose "Import a starter file" (or open Settings & data, then "Import a starter file").
+2. Choose the file. The app shows everything it contains.
+3. Click "Add these N things".
+
+Evidence from a file always arrives as "your claim, not yet verified", whatever the file says. Every imported
+entry is marked as imported and can be edited or deleted. Importing the same file twice adds nothing twice.
+Keep your own starter file out of this repository: it is personal data. `tests/test_workflows.py` shows the
+format (`STARTER`).
 
 ## Turning on live AI
 
@@ -73,7 +87,7 @@ Keyboard: Tab reaches everything, a "Skip to main content" link comes first, Ent
 
 ## Test results
 
-`116 passed` on Python 3.13, Linux, 2026-11-10. Not yet run on macOS. Coverage by acceptance criterion:
+`121 passed` on Python 3.13, Linux, 2026-11-10. Not yet run on macOS. Coverage by acceptance criterion:
 
 | Criterion | Tests |
 |---|---|
@@ -88,6 +102,7 @@ Keyboard: Tab reaches everything, a "Skip to main content" link comes first, Ent
 | $16 stop, unknown usage counted conservatively | `test_budget.py`, `test_failed_call_is_charged_conservatively` |
 | Local endpoints protected | `test_security.py` (22 tests) |
 | Session timer starts only on a chosen action, and ends | `test_session_timer_info_and_end` |
+| Starter file: one-step import, never pre-verified, safe to repeat, validated | `test_starter_file_*` (4 tests), `test_imported_private_memory_still_stays_out_of_drafting` |
 
 The interface was also driven in headless Chromium at 1470 x 860 (13-inch MacBook Air), 1710 x 1010 and
 390 x 844: onboarding, the empty account, sample data, a confirmed suggestion, a full session, a draft and
@@ -120,6 +135,7 @@ pairs measured; no sideways scrolling at any size.
   your macOS user could read it.
 - Reminders appear only when the app is open. There are no notifications and no background work.
 - Replies are not streamed, so a live reply appears all at once after a pause.
+- Pasting a résumé does not create evidence entries by itself. A starter file does that in bulk; someone still has to write the file.
 - Light theme only. The earlier automatic dark mode was removed in the redesign and has not been redrawn.
 - The session ring is a timer, not an alarm: nothing sounds, and it only updates while the app is open.
 - Panel width and collapsed state are stored in the browser (layout only, no personal data).

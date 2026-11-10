@@ -277,3 +277,56 @@ def test_session_timer_info_and_end(client):
 def test_onboarding_questions_are_short_with_a_hint(client):
     state = client.get("/api/bootstrap").json()["onboarding"]
     assert len(state["question"]) < 70 and state["hint"]
+
+
+# ---- starter file -----------------------------------------------------------------------
+
+STARTER = {
+    "career_companion_starter": 1,
+    "memory": [{"kind": "goal", "text": "Synthetic goal from a file"},
+               {"kind": "voice_note", "text": "Plain and direct.", "audience": "recruiter"}],
+    "evidence": [{"title": "Synthetic imported project", "claim": "Analysed 9 files.", "permitted_uses": ["profile"],
+                  "metrics": [{"value": "9", "unit": "files", "label": "inputs"}],
+                  "status": "user_verified_with_artifact", "source_ref": "claims to be verified"}],
+    "items": [{"kind": "opportunity", "title": "Synthetic role", "org": "Example Org"}],
+    "actions": [{"title": "Synthetic first to-do", "kind": "profile_edit", "item_title": "Synthetic role"}],
+}
+
+
+def test_starter_file_adds_everything_in_one_step(client):
+    r = client.post("/api/starter/import", json=STARTER)
+    assert r.status_code == 200
+    assert r.json()["added"] == {"memory": 2, "evidence": 1, "items": 1, "actions": 1}
+    assert client.get("/api/today").json()["recommended"]["action"]["title"] == "Synthetic first to-do"
+    assert client.get("/api/today").json()["recommended"]["item"]["title"] == "Synthetic role"
+
+
+def test_starter_file_cannot_mark_evidence_verified(client):
+    client.post("/api/starter/import", json=STARTER)
+    ev = client.get("/api/evidence").json()[0]
+    assert ev["status"] == "unverified_user_claim" and ev["provenance"] == "imported_file"
+    assert {m["provenance"] for m in client.get("/api/memory").json()} == {"imported_file"}
+
+
+def test_starter_file_is_safe_to_import_twice(client):
+    client.post("/api/starter/import", json=STARTER)
+    again = client.post("/api/starter/import", json=STARTER).json()
+    assert again["added"] == {"memory": 0, "evidence": 0, "items": 0, "actions": 0} and again["skipped"] == 5
+    assert len(client.get("/api/evidence").json()) == 1
+
+
+def test_starter_file_is_validated(client):
+    assert client.post("/api/starter/import", json={**STARTER, "career_companion_starter": 2}).status_code == 422
+    assert client.post("/api/starter/import", json={**STARTER, "ledger": [{"cost_usd": -99}]}).status_code == 422
+    bad = {**STARTER, "memory": [{"kind": "goal", "text": "x", "provenance": "user_typed"}]}
+    assert client.post("/api/starter/import", json=bad).status_code == 422
+    assert client.get("/api/memory").json() == []
+
+
+def test_imported_private_memory_still_stays_out_of_drafting(client, mock_ai):
+    client.post("/api/starter/import", json={**STARTER, "memory": [{"kind": "constraint", "text": "CANARY-IMPORTED-PRIVATE"}]})
+    ev = client.get("/api/evidence").json()[0]
+    client.post("/api/drafts/generate", json={"purpose": "profile", "evidence_ids": [ev["id"]]})
+    draft_request = [r for r in mock_ai.requests if r.call_type == "draft"][-1]
+    assert "CANARY-IMPORTED-PRIVATE" not in draft_request.system + draft_request.user
+    assert "Analysed 9 files." in draft_request.user
