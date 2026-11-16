@@ -70,14 +70,20 @@ Python and pandas for cleaning and aggregation, matplotlib for the process image
 
 | Folder or file | Contents |
 |---|---|
-| scripts | prep.py (clean and combine), agg.py (aggregates and gap check), images.py (process images) |
-| data | Aggregated tables only. The raw stream log is excluded for privacy. dashboard_daily.csv is the main table behind every chart (day by hour by artist, top 50 artists plus an "All other artists" bucket). artist_top_song.csv holds each top artist's most played song and play count, and is related to the main table in Tableau by artist name |
+| scripts | pipeline.py (runs everything below in order), prep.py (clean and combine), agg.py (aggregates and gap check), dashboard.py (the tables Tableau reads), images.py (process images) |
+| data | Aggregated tables only. The raw stream log is excluded for privacy. dashboard_artist_date_hour.csv is the main table behind every chart (one row per artist, date and hour, top 50 artists plus an "All other artists" bucket). artist_top_song.csv holds each top artist's most played song and play count, and is related to the main table in Tableau by artist name. dashboard_artist_date_hour_with_top_song.csv is the same main table with the top song already joined on, for a single flat data source. File names describe what is in the file; earlier versions live in the git history, not in copies like _v2 |
 | images | The step by step process images and screenshots of both dashboard pages. The artist photo files used for the dashboard are kept out of the repository |
-| tableau | Exported workbook (.twbx) |
 
 ## Reproduce it
 
-Request your data at spotify.com under Account, Privacy settings, then Download your data. Unzip the export, then run scripts/prep.py with the export folder and an output folder as arguments.
+Request your data at spotify.com under Account, Privacy settings, then Download your data. Unzip the export, then rebuild every table and process image with one command:
+
+```bash
+pip install -r requirements.txt
+python scripts/pipeline.py "path/to/Spotify Account Data"
+```
+
+Then open the workbook in Tableau, refresh the data source, and republish. The dashboard screenshots (images 11 and 12) are taken by hand from Tableau Public.
 
 ## Limitations
 

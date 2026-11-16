@@ -1,4 +1,5 @@
 import pandas as pd
+import os,sys; os.chdir(sys.argv[1] if len(sys.argv)>1 else ".")
 df=pd.read_csv("streams_clean.csv",parse_dates=["date"])
 d=pd.read_csv("daily_summary.csv",parse_dates=["date"]).set_index("date")
 full=pd.date_range(d.index.min(),d.index.max())
